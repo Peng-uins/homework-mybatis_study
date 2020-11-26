@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="js/jquery-1.12.4.min.js"></script>
+    <script>
+        $(function(){
+            $.ajax({
+                url:"list",
+                //查询使用get，增删改用post
+                type:'get',
+                success:function(value){
+                    $.each(value,function(index,i){
+                        $("table").append(
+                            "<tr>"+
+                            "<td>"+i.uid+"</td>"+
+                            "<td>"+i.userName+"</td>"+
+                            "</tr>"
+                        );
+                    })
+                }
+            })
+        });
+    </script>
+    <style>
+        table{
+            border: 1px solid;
+            border-collapse: collapse;
+        }
+        th,td{
+            border: 1px solid;
+        }
+    </style>
+</head>
+<body>
+    <table>
+        <tr>
+            <th>编号</th>
+            <th>姓名</th>
+        </tr>
+    </table>
+</body>
+</html>

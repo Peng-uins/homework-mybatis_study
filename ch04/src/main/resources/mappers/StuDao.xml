@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.nf.ch04.dao.StuDao">
+    <!-- 配置stuMapper -->
+    <resultMap id="stuMap" type="edu.nf.ch04.entity.Student">
+        <!-- 映射ID -->
+        <id property="stuId" column="stu_id"/>
+        <!-- 其他属性 -->
+        <result property="stuName" column="stu_name"/>
+        <result property="stuAge" column="stu_age"/>
+        <!-- 一对一或者多对一使用association关联
+             一对多或者多对多使用collection关联-->
+        <!-- 关联身份证，一对一关联,resultMap属性引用下面的身份证的resultMap的id -->
+        <association property="idCard" resultMap="cardMap"/>
+        <!-- 关联班级，多对一 -->
+        <association property="classInfo" resultMap="classMap"/>
+        <!-- 关联课程，多对多 -->
+        <collection property="subjects" resultMap="subMap"/>
+    </resultMap>
+
+    <!-- 配置cardMapper -->
+    <resultMap id="cardMap" type="edu.nf.ch04.entity.IdCard">
+        <!-- 主键 -->
+        <id property="cardId" column="card_id"/>
+        <!-- 其他属性 -->
+        <result property="cardNum" column="card_num"/>
+    </resultMap>
+
+    <!-- 配置classMap -->
+    <resultMap id="classMap" type="edu.nf.ch04.entity.ClassInfo">
+        <id property="cid" column="c_id"/>
+        <result property="className" column="c_name"/>
+        <!-- 关联学生stuMap -->
+        <association property="students" resultMap="stuMap"/>
+    </resultMap>
+
+    <!-- 配置subMap -->
+    <resultMap id="subMap" type="edu.nf.ch04.entity.Subject" >
+        <id property="subId" column="sub_id"/>
+        <result property="subName" column="sub_name"/>
+    </resultMap>
+
+    <select id="getStudentById" parameterType="edu.nf.ch04.entity.Student" resultMap="stuMap">
+        <!-- 换行要加空格 -->
+        select stu.stu_id,stu.stu_name,stu.stu_age,card.card_num,cla.c_name
+        from student_info stu join card_info card on stu.stu_id = card.stu_id
+        join class_info cla on cla.c_id = stu.c_id
+    </select>
+
+    <select id="getStudentById2" parameterType="edu.nf.ch04.entity.Student" resultMap="stuMap">
+      select si.sub_name from student_info s join stu_sub ss on s.stu_id = ss.stu_id
+      join subject_info si on ss.sub_id = si.sub_id
+      where s.stu_id = #{id}
+    </select>
+
+    <delete id="deleteStudent" parameterType="int">
+       delete from student_info where stu_id = #{uid};
+
+    </delete>
+
+    <delete id="deleteIdCard" parameterType="int">
+        delete from stu_sub where stu_id = #{uid};
+
+    </delete>
+
+    <delete id="deleteStu_Sub" parameterType="int">
+         delete from card_info where stu_id = #{uid}
+    </delete>
+
+
+
+</mapper>

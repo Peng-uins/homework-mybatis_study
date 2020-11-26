@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.nf.ch01.dao.UsersDao">
+
+    <!-- 使用resultMap封装一个结果集
+         id是给当前的resultMap定义一个唯一标识符
+         type是指定映射的实体类-->
+    <resultMap id="userMap" type="users">
+        <!-- 主键映射才使用id property指定的是实体字段的名称，column指定表字段的名称-->
+        <id property="uid" column="u_id"/>
+        <!-- 其他表列名是用result property指定的是实体字段的名称，column指定表字段的名称  -->
+        <result property="userName" column="u_name"/>
+    </resultMap>
+
+    <!-- 查询语句现在不用在自己定义实体对象别名使用定义好的resultMap把它的id给他，
+         这就会自动识别列名和实体字段名进行匹配省一步自己匹配实体名称的操作 -->
+    <select id="listUser" resultMap="userMap">
+        select * from user_info;
+    </select>
+    
+</mapper>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="js/jquery-1.12.4.min.js"></script>
+    <script>
+        $(function(){
+            $.ajax({
+                url:"list",
+                //查询使用get，增删改用post
+                type:'get',
+                success:function(value){
+                    $.each(value,function(index,i){
+                        $("table").append(
+                            "<tr>"+
+                            "<td>"+i.uid+"</td>"+
+                            "<td>"+i.userName+"</td>"+
+                            "<td>"+i.age+"</td>"+
+                            "<td>"+i.tel+"</td>"+
+                            "</tr>"
+                        );
+                    })
+                }
+            });
+            $(':button').on('click',function(){
+                var param = $("form").serialize();
+                $.ajax({
+                    url:"list",
+                    //查询使用get，增删改用post
+                    type:'get',
+                    data:param,
+                    success:function(value){
+                        $('tr:not(:first)').remove();
+                        $.each(value,function(index,i){
+                            $("table").append(
+                                "<tr>"+
+                                "<td>"+i.uid+"</td>"+
+                                "<td>"+i.userName+"</td>"+
+                                "<td>"+i.age+"</td>"+
+                                "<td>"+i.tel+"</td>"+
+                                "</tr>"
+                            );
+                        })
+                    }
+                });
+            });
+        });
+    </script>
+    <style>
+        table{
+            border: 1px solid;
+            border-collapse: collapse;
+        }
+        th,td{
+            border: 1px solid;
+            align-content: center;
+        }
+    </style>
+</head>
+<body>
+    <form>
+        编号：<input type="text" name="uid">
+        姓名：<input type="text" name="userName">
+        年龄：<input type="text" name="age">
+        电话：<input type="text">
+        <input type="button" value="查询">
+    </form>
+    <table>
+        <tr>
+            <th>编号</th>
+            <th>姓名</th>
+            <th>年龄</th>
+            <th>电话</th>
+        </tr>
+    </table>
+</body>
+</html>

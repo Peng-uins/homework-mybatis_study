@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="js/jquery-1.12.4.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script>
+        $(function(){
+            $.ajax({
+                url:"list",
+                //查询使用get，增删改用post
+                type:'get',
+                success:function(value){
+                    $.each(value,function(index,i){
+                        $("table").append(
+                            "<tr>"+
+                            "<td><input type='checkbox' name='chk' value='"+i.stuId+"' /></td>"+
+                            "<td>"+i.stuId+"</td>"+
+                            "<td>"+i.stuName+"</td>"+
+                            "<td>"+i.stuAge+"</td>"+
+                            "<td>"+i.classInfo+"</td>"+
+                            "<td>"+i.idCard+"</td>"+
+                            "<td><input type='button' value='明细' name='mx' id='"+i.stuId+"'/></td>"+
+                            "</tr>"
+                        );
+                       $("#"+i.stuId+"").on('click',function(){
+                           $(".pbq").remove();
+                           $.ajax({
+                               url:"lists?cx="+i.stuId+"",
+                               //查询使用get，增删改用post
+                               type:'get',
+                               success:function(value){
+                                   $.each(value,function(index,i){
+                                       $(".modal-body").append(
+                                            "<p class='pbq'  align='center'>"+i+"</p>"
+                                       );
+                                   });
+                               }
+                           });
+                           $("#myModal").modal('show');
+                       });
+                    });
+                }
+            });
+            //批量删除按钮绑定事件
+            $("#delete").on('click',function(){
+                //把整个表单序列化,获取所有勾选的内容(ID值)
+                var param = $("#f1").serialize();
+                //使用ajax提交到后台
+                $.ajax({
+                    url:'delete_Student',
+                    type:'post',
+                    data:param,
+                    success:function(result){
+                        if(result > 0){
+                            //删除对应的row
+                            $("input:checked").closest("tr").remove();
+                        }else{
+                            alert("删除失败!");
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+    <style>
+        table{
+            border: 1px solid;
+            border-collapse: collapse;
+        }
+        th,td{
+            border: 1px solid;
+            align-content: center;
+        }
+    </style>
+</head>
+<body>
+    <form id="f1">
+        用户信息<button id="delete">删除</button>
+        <table class="table table-striped table table-hover">
+            <tr>
+                <th>选择</th>
+                <th>编号</th>
+                <th>姓名</th>
+                <th>年龄</th>
+                <th>班级</th>
+                <th>身份证</th>
+                <th>操作</th>
+            </tr>
+        </table>
+    </form>
+
+    <!-- 模态框（Modal） -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        选修课程
+                    </h4>
+                </div>
+                <div class="modal-body">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
